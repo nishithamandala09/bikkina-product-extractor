@@ -1,0 +1,215 @@
+
+<h2 class="sr-only">Bikkina Product Extractor — paste a product URL to extract all details for admin panel</h2>
+
+<div style="padding:1.5rem 0;">
+
+<div style="text-align:center; margin-bottom:1.5rem;">
+  <p style="font-size:22px; font-weight:500; color:var(--color-text-primary); margin:0 0 4px;">Bikkina Product Extractor</p>
+  <p style="font-size:14px; color:var(--color-text-secondary); margin:0;">Paste product URL → get complete admin panel details instantly</p>
+</div>
+
+<div style="background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; margin-bottom:1rem;">
+  <label style="font-size:13px; color:var(--color-text-secondary); display:block; margin-bottom:8px;">Product Page URL</label>
+  <input type="text" id="urlInput" placeholder="https://www.vivo.com/in/products/v50" style="width:100%; font-size:13px; margin-bottom:10px; box-sizing:border-box;">
+  <button id="extractBtn" onclick="extractProduct()" style="width:100%; font-size:14px; padding:10px;">
+    <i class="ti ti-sparkles" aria-hidden="true"></i> Extract Product Details
+  </button>
+  <p style="font-size:12px; color:var(--color-text-secondary); margin:8px 0 0; text-align:center;">Works with vivo, Samsung, Apple, OnePlus, Realme, Xiaomi, OPPO</p>
+</div>
+
+<div id="loadingDiv" style="display:none; text-align:center; padding:2rem; background:var(--color-background-secondary); border-radius:var(--border-radius-lg);">
+  <p id="loadingText" style="font-size:14px; color:var(--color-text-secondary); margin:0;">Extracting product details...</p>
+</div>
+
+<div id="resultDiv" style="display:none;">
+
+  <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:10px 14px; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+    <i class="ti ti-check" style="color:var(--color-text-success); font-size:16px;" aria-hidden="true"></i>
+    <p style="font-size:13px; color:var(--color-text-success); margin:0; font-weight:500;">Details extracted successfully!</p>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px;">
+      <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 3px;">Product Name</p>
+      <p id="resName" style="font-size:14px; font-weight:500; margin:0;"></p>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px;">
+      <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 3px;">Brand</p>
+      <p id="resBrand" style="font-size:14px; font-weight:500; margin:0;"></p>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px;">
+      <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 3px;">Selling Price</p>
+      <p id="resPrice" style="font-size:14px; font-weight:500; margin:0;"></p>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px;">
+      <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 3px;">Category</p>
+      <p id="resCategory" style="font-size:14px; font-weight:500; margin:0;"></p>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px;">
+      <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 3px;">Weight</p>
+      <p id="resWeight" style="font-size:14px; font-weight:500; margin:0;"></p>
+    </div>
+    <div style="background:var(--color-background-secondary); border-radius:var(--border-radius-md); padding:12px;">
+      <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 3px;">Warranty</p>
+      <p id="resWarranty" style="font-size:14px; font-weight:500; margin:0;"></p>
+    </div>
+  </div>
+
+  <div style="background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; margin-bottom:10px;">
+    <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 6px;">Description</p>
+    <p id="resDesc" style="font-size:13px; line-height:1.6; margin:0;"></p>
+  </div>
+
+  <div style="background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; margin-bottom:10px;">
+    <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 8px;">Specifications</p>
+    <div id="resSpecs" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;"></div>
+  </div>
+
+  <div style="background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; margin-bottom:10px;">
+    <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 8px;">Available Colors</p>
+    <div id="resColors" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+  </div>
+
+  <div style="background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; margin-bottom:10px;">
+    <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 8px;">Tags</p>
+    <div id="resTags" style="display:flex; flex-wrap:wrap; gap:8px;"></div>
+  </div>
+
+  <div style="background:var(--color-background-primary); border:0.5px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:1.25rem; margin-bottom:12px;">
+    <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 6px;">In The Box</p>
+    <p id="resBox" style="font-size:13px; margin:0;"></p>
+  </div>
+
+  <button onclick="copyAll()" id="copyBtn" style="width:100%; font-size:14px; padding:12px; font-weight:500;">
+    <i class="ti ti-copy" aria-hidden="true"></i> Copy All Details for Admin Panel
+  </button>
+
+</div>
+
+<div id="errorDiv" style="display:none; background:var(--color-background-danger); border-radius:var(--border-radius-md); padding:1rem; text-align:center;">
+  <p id="errorMsg" style="font-size:14px; color:var(--color-text-danger); margin:0;"></p>
+</div>
+
+</div>
+
+<script>
+let extractedData = null;
+
+async function extractProduct() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url) { showError('Please enter a product URL!'); return; }
+
+  document.getElementById('loadingDiv').style.display = 'block';
+  document.getElementById('resultDiv').style.display = 'none';
+  document.getElementById('errorDiv').style.display = 'none';
+  document.getElementById('extractBtn').disabled = true;
+
+  const msgs = ['Reading product page...', 'Extracting specifications...', 'Getting price and colors...', 'Almost done...'];
+  let mi = 0;
+  const iv = setInterval(() => { mi = (mi+1)%msgs.length; document.getElementById('loadingText').textContent = msgs[mi]; }, 1800);
+
+  try {
+    const prompt = `You are a product data extractor for Bikkina, an Indian e-commerce website.
+
+Extract complete product details from this URL: ${url}
+
+Use your knowledge of this product from the official brand website. Be very accurate with:
+- Exact product name as shown on official website
+- Correct brand name
+- Current Indian market price in INR
+- All available color variants
+- Complete specifications from official specs page
+
+Return ONLY valid JSON (absolutely no markdown, no backticks, no explanation):
+{"name":"exact product name","brand":"brand name","selling_price":"price as number only","category":"Smartphones or Laptops etc","weight":"weight in grams as number only","warranty":"warranty in years as number only","description":"3 sentences about key features","specifications":[{"key":"Display","value":"specs"},{"key":"Processor","value":"chipset"},{"key":"RAM","value":"options"},{"key":"Storage","value":"options"},{"key":"Rear Camera","value":"details"},{"key":"Front Camera","value":"details"},{"key":"Battery","value":"capacity"},{"key":"Charging","value":"speed"},{"key":"OS","value":"os version"},{"key":"5G","value":"Yes or No"},{"key":"Water Resistance","value":"IP rating or None"},{"key":"Bluetooth","value":"version"},{"key":"USB","value":"type"}],"colors":["color1","color2"],"tags":["tag1","tag2","tag3","tag4","tag5"],"in_the_box":"comma separated list of items"}`;
+
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{role: 'user', content: prompt}]
+      })
+    });
+
+    clearInterval(iv);
+    const data = await res.json();
+    if (!data.content) throw new Error('No response');
+    const text = data.content.map(i => i.text||'').join('');
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('No JSON');
+    const parsed = JSON.parse(match[0]);
+    extractedData = parsed;
+    displayResults(parsed);
+
+  } catch(e) {
+    clearInterval(iv);
+    showError('Extraction failed. Please try again or check your internet connection.');
+  } finally {
+    document.getElementById('loadingDiv').style.display = 'none';
+    document.getElementById('extractBtn').disabled = false;
+  }
+}
+
+function displayResults(d) {
+  document.getElementById('resName').textContent = d.name||'-';
+  document.getElementById('resBrand').textContent = d.brand||'-';
+  document.getElementById('resPrice').textContent = d.selling_price ? '₹'+Number(d.selling_price).toLocaleString('en-IN') : '-';
+  document.getElementById('resCategory').textContent = d.category||'-';
+  document.getElementById('resWeight').textContent = d.weight ? d.weight+'g' : '-';
+  document.getElementById('resWarranty').textContent = d.warranty ? d.warranty+' Year' : '-';
+  document.getElementById('resDesc').textContent = d.description||'-';
+  document.getElementById('resBox').textContent = d.in_the_box||'-';
+
+  const sp = document.getElementById('resSpecs'); sp.innerHTML='';
+  (d.specifications||[]).forEach(s => {
+    sp.innerHTML += `<div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:8px 10px;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 2px;">${s.key}</p><p style="font-size:12px;font-weight:500;margin:0;">${s.value}</p></div>`;
+  });
+
+  const cl = document.getElementById('resColors'); cl.innerHTML='';
+  (d.colors||[]).forEach(c => {
+    cl.innerHTML += `<span style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 12px;font-size:13px;">${c}</span>`;
+  });
+
+  const tg = document.getElementById('resTags'); tg.innerHTML='';
+  (d.tags||[]).forEach(t => {
+    tg.innerHTML += `<span style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:5px 12px;font-size:13px;">${t}</span>`;
+  });
+
+  document.getElementById('resultDiv').style.display = 'block';
+}
+
+function copyAll() {
+  if (!extractedData) return;
+  const d = extractedData;
+  const t = `PRODUCT NAME: ${d.name}
+BRAND: ${d.brand}
+CATEGORY: ${d.category}
+SELLING PRICE: ₹${Number(d.selling_price).toLocaleString('en-IN')}
+WEIGHT: ${d.weight}g
+WARRANTY: ${d.warranty} Year
+
+DESCRIPTION:
+${d.description}
+
+SPECIFICATIONS:
+${(d.specifications||[]).map(s=>`${s.key}: ${s.value}`).join('\n')}
+
+COLORS: ${(d.colors||[]).join(', ')}
+TAGS: ${(d.tags||[]).join(', ')}
+IN THE BOX: ${d.in_the_box}`;
+
+  navigator.clipboard.writeText(t).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Copied Successfully!';
+    setTimeout(() => { btn.innerHTML = '<i class="ti ti-copy" aria-hidden="true"></i> Copy All Details for Admin Panel'; }, 2500);
+  });
+}
+
+function showError(msg) {
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorDiv').style.display = 'block';
+  document.getElementById('loadingDiv').style.display = 'none';
+}
+</script>
